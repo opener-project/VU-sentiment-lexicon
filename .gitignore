@@ -1,4 +1,6 @@
 *.py[co]
+*~
+COPYED_TO
 
 # Packages
 *.egg
