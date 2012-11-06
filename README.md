@@ -4,14 +4,23 @@ VU-sentiment-lexicon
 This is a library to load and query sentiment lexicons in English, Dutch and German. This library is required to use other components like the VU-polarity-tagger or
 the VU-sentiment-aggregator.
 
-Installation
-------------
 The first thing you need is to clone the github repository:
 
 ````shell
-git clone git@github.com:opener-project/VU-sentiment-lexicon.git
+git clone git@github.com:opener-project/VU-kaf-parser.git
 ````
 
+There are two ways of install the library.
+
+Configuration
+-------------
+This is the easiest way to use the library and make it available to the rest of modules. The only requirement is
+to include the folder where you did the clone of the repository in your PYTHONPATH envinronment variable
+
+
+
+Installation
+------------
 Once you have all the files, you have to install the python library so that you can use it from other
 python modules and script. For this purpose we provide an script called setup.py. To install the library:
 
