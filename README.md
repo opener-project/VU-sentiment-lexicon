@@ -7,7 +7,7 @@ the VU-sentiment-aggregator.
 The first thing you need is to clone the github repository:
 
 ````shell
-git clone git@github.com:opener-project/VU-kaf-parser.git
+git clone git@github.com:opener-project/VU-sentiment-lexicon.git
 ````
 
 There are two ways of install the library.
