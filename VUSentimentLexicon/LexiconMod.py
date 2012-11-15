@@ -99,8 +99,9 @@ class LexiconSent:
         self.lexSentFile = os.path.join(self.__module_dir,'NL-lexicon','hotel-sentimentgi42.txt')     
         self.negatorsFile = os.path.join(self.__module_dir,'NL-lexicon','negators.txt')
         self.intensifiersFile = os.path.join(self.__module_dir,'NL-lexicon','intensifiers.txt')
- 
-        self.__loadLexWW()
+        
+        # Do not load the www-vars for the lite version
+        ##### self.__loadLexWW()    --> Uncomment to use them again
         self.__loadLexSent()
         self.__loadNegators()
         self.__loadIntensifiers()    
