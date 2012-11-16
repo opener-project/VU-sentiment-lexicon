@@ -3102,7 +3102,6 @@ hazeslaapje/n/positive/
 heavy/a/negative/
 hebbeding/n/negative/
 hebbedingetje/n/negative/
-hebben/v/negative/
 hebberig/a/negative/
 hebberigheid/n/positive/
 hebzucht/n/positive/
@@ -4485,7 +4484,6 @@ ma/n/positive/
 maagdelijk/a/positive/
 maagdelijkheid/n/positive/
 maanziek/a/negative/
-maar/n/negative/
 maat/n/positive/
 maatschappijkritiek/n/negative/
 maatschappijkritisch/a/negative/
@@ -8769,7 +8767,6 @@ wantrouwen/v/negative/
 wantrouwend/a/negative/
 wantrouwig/a/negative/
 warboel/n/negative/
-waren/v/negative/
 warm/a/positive/
 warmhartig/a/positive/
 warmte/n/positive/
