@@ -4,181 +4,103 @@ import logging
 import os
 import re
 from collections import defaultdict
+from lxml import etree
+
+
+#####################
+# Changes:
+# 20-dic-2012: new hotel lexicons from Isa updated
+#########
 
 class LexiconSent:
 
     def __init__(self,language='nl'):
-        self.logger = logging.getLogger('Basic_SA_system.LexiconSent')
-
+        logging.debug('Loading lexicon for '+language)
         self.__module_dir = os.path.dirname(__file__)
-        
-        ## Internal variables
-        self.wwVars = defaultdict(set)
         self.sentLex = {}
         self.negators = set()
-        self.intensifiers = set()
-        self.posOrderIfNone = 'nvar'  ##Order of pos to lookup in case there is Pos in the KAF file
+        self.intensifiers = set()        
+        #self.posOrderIfNone = 'nvar'  ##Order of pos to lookup in case there is Pos in the KAF file
+        self.posOrderIfNone = 'NRVGA'
         self.resource = "unknown"
         
-        
-        if language=='nl':
-            self.__loadDutch()
-            self.resource = 'VUA_polarity_lexicon_word_NL'
-        elif language=='de':
-            self.__loadGerman()
-            self.resource = 'Zurich_polarity_lexicon_DE'
+        if language == 'nl':
+            self.filename = os.path.join(self.__module_dir,'NL-lexicon','Sentiment-Dutch-HotelDomain.xml') ## Domain specific
+            self.resource = 'VUA_olery_lexicon_nl_lmf'
         elif language == 'en':
-            self.__loadEnglish()
-            self.resource = 'SubjectiveClues'
+            self.filename = os.path.join(self.__module_dir,'EN-lexicon','Sentiment-English-HotelDomain.xml')
+            self.resource =  'VUA_olery_lexicon_en_lmf'
+            
+            
+        self.__load_lexicon_xml()
+
+
             
     def getResource(self):
         return self.resource
     
-    def __loadEnglish(self):
-        lexicon_file = os.path.join(self.__module_dir,'EN-lexicon','subjclueslen1-HLTEMNLP051.txt')
-        try:
-            my_re = re.compile(r'word1=([a-zA-Z0-9]+).*pos1=([a-zA-Z0-9]+).*priorpolarity=([a-zA-Z0-9]+)')
-            fic = open(lexicon_file,'r')
-            for line in fic:
-                matches = my_re.findall(line)
-                if len(matches) != 0 :
-                    lemma,pos,polarity = matches[0]
-                    if polarity in ['positive','negative','neutral']:
-                      if pos=='anypos':
-                        for my_pos in 'anrv':
-                            self.sentLex[(lemma,my_pos)]=polarity
-                      elif pos=='adverb':
-                        self.sentLex[(lemma,'r')] = polarity
-                      else:
-                        self.sentLex[(lemma,pos[0])] = polarity
-            fic.close()         
-        except Exception as e:
-            print str(e)
-            
-        ## Intensifiers
-        for int in ['very','really','definetely','especially','seriously']:
-            self.intensifiers.add(int)
-        
-        ## Negators
-        for neg in ['no','not','never','none']:
-            self.negators.add(neg)
-        
-            
-    def __loadGerman(self):
-        lexicon_file = os.path.join(self.__module_dir,'DE-lexicon','germanLex.txt')
-        try:
-            fic = codecs.open(lexicon_file,'r','utf-8')
-            for line in fic:
-                if line[0:2] != '%%':
-                  fields = line.strip().split()
-                  lemma = fields[0]
-                  type, value = fields[1].lower().split('=')
-                  pos = fields[2].lower()[0]
-                 
-                  
-                  if type == 'pos':
-                    self.sentLex[(lemma,pos)]='positive'
-                  elif type == 'neg':
-                    self.sentLex[(lemma,pos)]='negative'
-                  elif type == 'neu':
-                    self.sentLex[(lemma,pos)]='neutral'
-                  elif type == 'int':
-                    self.intensifiers.add(lemma)
-                  elif type == 'shi':
-                    self.negators.add(lemma)
-                  else:
-                    pass
-            fic.close()
-        except Exception as e:
-            print str(e),line
-        
-            
-        
-    def __loadDutch(self):
-        self.wwVarFile = os.path.join(self.__module_dir,'NL-lexicon','wwvars.txt')
-        self.lexSentFile = os.path.join(self.__module_dir,'NL-lexicon','hotel-sentimentgi42.txt')     
-        self.negatorsFile = os.path.join(self.__module_dir,'NL-lexicon','negators.txt')
-        self.intensifiersFile = os.path.join(self.__module_dir,'NL-lexicon','intensifiers.txt')
-        
-        # Do not load the www-vars for the lite version
-        ##### self.__loadLexWW()    --> Uncomment to use them again
-        self.__loadLexSent()
-        self.__loadNegators()
-        self.__loadIntensifiers()    
-        
+
+    def convert_pos_to_kaf(self,pos):
+        my_map = {}
+        my_map['adj'] = 'G'
+        my_map['adv'] =  'A'
+        my_map['multi_word_expression']= 'O'
+        my_map['noun']= 'N'
+        my_map['other']= 'O'
+        my_map['prep']= 'P'
+        my_map['verb']= 'V'
+        return my_map.get(pos.lower(),'O')
+
     
-    def __loadIntensifiers(self):
-      try:
-          f = open(self.intensifiersFile)
-          for line in f:
-            self.intensifiers.add(line.strip())
-          self.logger.info('Loaded '+str(len(self.intensifiers))+' intensifiers')
-          f.close()
-      
-      except Exception as e:
-          self.logger.error(str(e))
+    def __load_lexicon_xml(self):
+        logging.debug('Loading lexicon from the file'+self.filename)
+        from collections import defaultdict
+        d = defaultdict(int)
+        tree = etree.parse(self.filename)
+        for element in tree.getroot().findall('Lexicon/LexicalEntry'):
+            id = element.get('id','')
+            pos = element.get('partOfSpeech','')
+            type=element.get('type','')
+            short_pos = self.convert_pos_to_kaf(pos)
+            
+            type = element.get('type','')
+            d[type]+=1
+            lemma_ele = element.findall('Lemma')[0]
+            lemma = ''
+            if lemma_ele is not None:
+                lemma = lemma_ele.get('writtenForm')
+            
+            sent_ele = element.findall('Sense/Sentiment')[0]
+            polarity = strength = ''
+            if sent_ele is not None:
+                #print sent_ele
+                polarity = sent_ele.get('polarity','')
+                strength = sent_ele.get('strength','')
+                
+            if lemma!='':
+                if type!='':
+                    if type == 'polarityShifter':
+                        #self.negators.add((lemma,short_pos))
+                        self.negators.add(lemma)
+                    elif type == 'intensifier':
+                        self.intensifiers.add(lemma)
+                elif polarity!='':
+                    self.sentLex[(lemma,short_pos)]=polarity
+                    ##print>>sys.stderr,lemma,short_pos,polarity
+                    
+        logging.debug('Loaded: '+str(len(self.negators))+' negators')
+        logging.debug('Loaded: '+str(len(self.intensifiers))+' intensifiers')
+        logging.debug('Loaded: '+str(len(self.sentLex))+' elements with polarity')
+        
+ 
     
     def isIntensifier(self,lemma):
         return lemma in self.intensifiers
         
-    def __loadNegators(self):
-      try:
-          f = open(self.negatorsFile)
-          for line in f:
-            self.negators.add(line.strip())
-          self.logger.info('Loaded '+str(len(self.negators))+' negators')
-          f.close()
-      
-      except Exception as e:
-          self.logger.error(str(e))
-                                    
     
     def isNegator(self,lemma):
       return lemma in self.negators
       
-      
-    def __loadLexWW(self):
-      try:
-          #f = codecs.open(self.wwVarFile,'r','ISO 8859-1')
-          f = open(self.wwVarFile)
-          import HTMLParser
-          h = HTMLParser.HTMLParser()
-          for line in f:
-            fields = line.strip().split('/')
-            if len(fields)>2:
-                for w in fields[1:]:
-                    if w!='x':
-                        self.wwVars[h.unescape(fields[0])].add(h.unescape(w))
-          f.close()
-          self.logger.info('Loaded '+str(len(self.wwVars))+' ww-vars')
-      except Exception as e:
-          self.logger.error(str(e))
-  
-
-
-    def __loadLexSent(self):
-        n=ne=0
-        try:
-          f = open(self.lexSentFile)
-          for line in f:
-            fields = line.strip().split('/')
-            lemma,pos,sent = fields[0:3]
-            if pos=='adv':
-                pos='r'
-            self.sentLex[(lemma,pos)]=sent
-            n+=1
-            #print lemma,pos,sent
-            for word in self.wwVars.get(lemma,[]):
-              if word!='x':
-                self.sentLex[(word,pos)]=sent
-                ne+=1
-                #print '\t',word,pos,sent
-          f.close()
-          self.logger.info('Number of words with sentiment from lexicon '+str(n))
-          self.logger.info('Number of words with sentiment from wwVars '+str(ne))
-        except Exception as e:
-            self.logger.error(str(e))
-            sys.exit(-1)
     
     def getPolarity(self,lemma,pos):
       if pos:
@@ -186,7 +108,7 @@ class LexiconSent:
       else:
         for newpos in self.posOrderIfNone:
             if (lemma,newpos) in self.sentLex:
-                self.logger.info('Found polarify for '+lemma+' with PoS '+newpos)
+                logging.debug('Found polarify for '+lemma+' with PoS '+newpos)
                 return self.sentLex[(lemma,newpos)],newpos
         return ('unknown','unknown')
     
