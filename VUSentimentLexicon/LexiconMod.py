@@ -30,8 +30,10 @@ class LexiconSent:
         elif language == 'en':
             self.filename = os.path.join(self.__module_dir,'EN-lexicon','Sentiment-English-HotelDomain.xml')
             self.resource =  'VUA_olery_lexicon_en_lmf'
-            
-            
+        elif language == 'de':
+          self.filename = os.path.join(self.__module_dir,'DE-lexicon','Sentiment-German-HotelDomain.xml')
+          self.resource =  'VUA_olery_lexicon_de_lmf'        
+                
         self.__load_lexicon_xml()
 
 
