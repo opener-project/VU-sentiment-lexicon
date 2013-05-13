@@ -32,7 +32,14 @@ class LexiconSent:
             self.resource =  'VUA_olery_lexicon_en_lmf'
         elif language == 'de':
           self.filename = os.path.join(self.__module_dir,'DE-lexicon','Sentiment-German-HotelDomain.xml')
-          self.resource =  'VUA_olery_lexicon_de_lmf'        
+          self.resource =  'VUA_olery_lexicon_de_lmf'
+        elif language == 'fr':
+          self.filename = os.path.join(self.__module_dir,'FR-lexicon','fr-sentiment_lexicon.lmf')
+          self.resource = 'Vicomtech_general_lexicon_french'
+        else:
+          print 'Language resource not available for ',language
+          sys.exit(-1)
+              
                 
         self.__load_lexicon_xml()
 
