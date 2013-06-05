@@ -39,6 +39,9 @@ class LexiconSent:
         elif language == 'it':
           self.filename = os.path.join(self.__module_dir,'IT-lexicon','it-sentiment_lexicon.lmf')
           self.resource = 'CRN_general_lexicon_italian'
+        elif language == 'es':
+          self.filename = os.path.join(self.__module_dir,'ES-lexicon','es-sentiment_lexicon.lmf')
+          self.resource = 'EHU_general_lexicon_spanish'
         else:
           print 'Language resource not available for ',language
           sys.exit(-1)
