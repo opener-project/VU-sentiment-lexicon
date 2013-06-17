@@ -59,8 +59,11 @@ The method is based on SentiWordNet and basically we map, SentiWorNet to the WOL
 1) Filter the result synsets depending on the Part of Speech:
 
   Nouns: if polarity is higher than 0.5 (positive or negative) => include.
+
   Verbs: if polarity is higher than 0.5 (positive or negative) => include.
+
   Adverbs: if polarity is higher than 0.5 (positive or negative) => include.
+
   Adjectives: include all of them.
  
 2) Correct polarity with the french 1000 more frequent words file.
