@@ -41,3 +41,31 @@ library so that python could find the library. Depending on your system, the str
 If you use linux or MAC the folder you have to add to your PYTHON_PATH is your_selected_path/lib/pythonX.Y/site-packages
 If you use windows: prefix\Lib\site-packages
 
+French lexicon
+--------------
+
+There are two lexicon:
+
+1) fr-sentiment_lexicon-old.lmf: lexicon generated following the propagation algorithm.
+2) fr-sentiment_lexicon.lmf: the new lexicon.
+
+The new one has been built as described below:
+
+The method is based on SentiWordNet and basically we map, SentiWorNet to the WOLF synsets. We calculate a score with them:
+
+  1 - positive_polarity - negative_polarity
+
+1) Filter the result synsets depending on the Part of Speech:
+
+  Nouns: if polarity is higher than 0.5 (positive or negative) => include.
+  Verbs: if polarity is higher than 0.5 (positive or negative) => include.
+  Adverbs: if polarity is higher than 0.5 (positive or negative) => include.
+  Adjectives: include all of them.
+ 
+2) Correct polarity with the french 1000 more frequent words file.
+
+3) Build a csv file, then we build the lmf file with ruben's script from VUA (activate -verbose option), and we add the intensifiers/weakeners/polarityShifters.
+
+4) Annotate polarity of 10 files with the VU-polarity-tagger.
+
+5) Manually correct lexicon with the most common errors (stop words, neutral verbs, etc). Keep in mind that the polarity tagger does not use WSD, only lemmatization and Part of Speech, so we do the corrections in that direction.
