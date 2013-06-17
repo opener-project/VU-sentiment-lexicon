@@ -47,6 +47,7 @@ French lexicon
 There are two lexicon:
 
 1) fr-sentiment_lexicon-old.lmf: lexicon generated following the propagation algorithm.
+
 2) fr-sentiment_lexicon.lmf: the new lexicon.
 
 The new one has been built as described below:
