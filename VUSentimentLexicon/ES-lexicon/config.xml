@@ -1,0 +1,7 @@
+<lexicons>
+  <lexicon id="general" default="1">
+    <filename>es-sentiment_lexicon.lmf</filename>
+    <description>General domain lexicon for Spanish</description>
+    <resource>EHU_general_lexicon_spanish</resource>
+  </lexicon>
+</lexicons>

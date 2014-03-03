@@ -1,0 +1,7 @@
+<lexicons>
+  <lexicon id="hotel" default="1">
+    <filename>Sentiment-German-HotelDomain.xml</filename>
+    <description>Hotel domain lexicon for German</description>
+    <resource>VUA_olery_lexicon_de_lmf</resource>
+  </lexicon>
+</lexicons>

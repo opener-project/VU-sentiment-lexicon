@@ -1,0 +1,12 @@
+<lexicons>
+  <lexicon id="hotel" default="1">
+    <filename>Sentiment-Dutch-HotelDomain.xml</filename>
+    <description>Hotel domain lexicon for Dutch</description>
+    <resource>VUA_olery_lexicon_nl_lmf</resource>
+  </lexicon>
+  <lexicon id="general" default="0">
+    <filename>Sentiment-Dutch-general.xml</filename>
+    <description>General lexicon for Dutch</description>
+    <resource>VUA_olery_lexicon_nl_lmf</resource>
+  </lexicon>
+</lexicons>
