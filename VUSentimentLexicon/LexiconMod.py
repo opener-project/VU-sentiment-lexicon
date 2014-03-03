@@ -86,7 +86,7 @@ class LexiconSent:
         if my_id is None:
             id_to_load = default_id
         else:
-            if my_id in lexicon:
+            if my_id in lexicons:
                 id_to_load = my_id
             else:
                 id_to_load = default_id
