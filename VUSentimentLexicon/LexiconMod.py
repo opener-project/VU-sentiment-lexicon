@@ -7,56 +7,13 @@ from collections import defaultdict
 from lxml import etree
 
 
+__module_dir = os.path.dirname(__file__)
 #####################
 # Changes:
 # 20-dic-2012: new hotel lexicons from Isa updated
 #########
 
-
-class LexiconSent:
-
-    def __init__(self,language='nl',lexicon_id=None):
-        self.VERSION = '1.0'
-        logging.debug('Loading lexicon for '+language)
-        self.__module_dir = os.path.dirname(__file__)
-        self.sentLex = {}
-        self.negators = set()
-        self.intensifiers = set()        
-        #self.posOrderIfNone = 'nvar'  ##Order of pos to lookup in case there is Pos in the KAF file
-        self.posOrderIfNone = 'NRVGA'
-        self.resource = "unknown"
-        
-        self.load_resources(language,lexicon_id)
-
-        '''        
-        if language == 'nl':
-            self.load_resources()
-            self.filename = os.path.join(self.__module_dir,'NL-lexicon','Sentiment-Dutch-HotelDomain.xml') ## Domain specific
-            self.resource = 'VUA_olery_lexicon_nl_lmf'
-        elif language == 'en':
-            self.filename = os.path.join(self.__module_dir,'EN-lexicon','Sentiment-English-HotelDomain.xml')
-            self.resource =  'VUA_olery_lexicon_en_lmf'
-        elif language == 'de':
-          self.filename = os.path.join(self.__module_dir,'DE-lexicon','Sentiment-German-HotelDomain.xml')
-          self.resource =  'VUA_olery_lexicon_de_lmf'
-        elif language == 'fr':
-          self.filename = os.path.join(self.__module_dir,'FR-lexicon','fr-sentiment_lexicon.lmf')
-          self.resource = 'Vicomtech_general_lexicon_french'
-        elif language == 'it':
-          self.filename = os.path.join(self.__module_dir,'IT-lexicon','it-sentiment_lexicon.lmf')
-          self.resource = 'CRN_general_lexicon_italian'
-        elif language == 'es':
-          self.filename = os.path.join(self.__module_dir,'ES-lexicon','es-sentiment_lexicon.lmf')
-          self.resource = 'EHU_general_lexicon_spanish'
-        else:
-          print 'Language resource not available for ',language
-          sys.exit(-1)
-        '''  
-                
-        self.__load_lexicon_xml()
-
-
-    def load_resources(self,language,my_id=None):
+def load_lexicons(language):
         folder_per_lang = {}
         folder_per_lang['nl'] = 'NL-lexicon'
         folder_per_lang['en'] = 'EN-lexicon'
@@ -65,7 +22,7 @@ class LexiconSent:
         folder_per_lang['it'] = 'IT-lexicon'
         folder_per_lang['es'] = 'ES-lexicon'
         
-        config_file = os.path.join(self.__module_dir,folder_per_lang[language],'config.xml')
+        config_file = os.path.join(__module_dir,folder_per_lang[language],'config.xml')
         lexicons_obj = etree.parse(config_file)
         lexicons = {}
         default_id = None
@@ -81,7 +38,47 @@ class LexiconSent:
             resource = lexicon.find('resource').text
             lexicons[this_id] = (filename,description,resource)
         if default_id is None: default_id = first_id
+        return lexicons,default_id,__module_dir,folder_per_lang
+    
+def show_lexicons(language):
+    lexicons, default_id,this_folder,folder_per_lang = load_lexicons(language)
+    print
+    print '#'*30
+    print 'Available lexicons for',language
+    for lex_id, (filename, description, resource) in lexicons.items():
+        if lex_id == default_id:
+            print '  Identifier: "'+lex_id+'" (Default)'
+        else:
+            print '  Identifier:"'+lex_id+'"'
+        print '    Desc:',description.encode('utf-8')
+        print '     Res:',resource.encode('utf-8')
+        print '    File:',os.path.join(this_folder,folder_per_lang[language],filename.encode('utf-8'))
+        print
+    print '#'*30
+    print
+
+
+class LexiconSent:
+
+    def __init__(self,language='nl',lexicon_id=None):
+        self.VERSION = '1.0'
+        logging.debug('Loading lexicon for '+language)
+        self.sentLex = {}
+        self.negators = set()
+        self.intensifiers = set()        
+        #self.posOrderIfNone = 'nvar'  ##Order of pos to lookup in case there is Pos in the KAF file
+        self.posOrderIfNone = 'NRVGA'
+        self.resource = "unknown"
         
+        self.load_resources(language,lexicon_id)
+
+                
+        self.__load_lexicon_xml()
+
+    
+    def load_resources(self,language,my_id=None):
+        lexicons, default_id, this_folder, folder_per_lang = load_lexicons(language)
+       
         id_to_load = None
         if my_id is None:
             id_to_load = default_id
@@ -91,7 +88,7 @@ class LexiconSent:
             else:
                 id_to_load = default_id
                 
-        self.filename = os.path.join(self.__module_dir,folder_per_lang[language],lexicons[id_to_load][0])
+        self.filename = os.path.join(this_folder,folder_per_lang[language],lexicons[id_to_load][0])
         self.resource = lexicons[id_to_load][1]+" . "+lexicons[id_to_load][2]
         
             
