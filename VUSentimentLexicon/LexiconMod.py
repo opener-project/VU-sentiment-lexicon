@@ -40,8 +40,8 @@ def load_lexicons(language, lexicon_path=__module_dir):
         if default_id is None: default_id = first_id
         return lexicons,default_id,lexicon_path,folder_per_lang
 
-def show_lexicons(language):
-    lexicons, default_id,this_folder,folder_per_lang = load_lexicons(language)
+def show_lexicons(language, path=__module_dir):
+    lexicons, default_id,this_folder,folder_per_lang = load_lexicons(language, path)
     print
     print '#'*30
     print 'Available lexicons for',language
@@ -60,7 +60,7 @@ def show_lexicons(language):
 
 class LexiconSent:
 
-    def __init__(self,language='nl',lexicon_id=None):
+    def __init__(self,language='nl',lexicon_id=None, path=__module_path):
         self.VERSION = '1.0'
         logging.debug('Loading lexicon for '+language)
         self.sentLex = {}
@@ -70,14 +70,14 @@ class LexiconSent:
         self.posOrderIfNone = 'NRVGA'
         self.resource = "unknown"
 
-        self.load_resources(language,lexicon_id)
+        self.load_resources(language,lexicon_id, path)
 
 
         self.__load_lexicon_xml()
 
 
-    def load_resources(self,language,my_id=None):
-        lexicons, default_id, this_folder, folder_per_lang = load_lexicons(language)
+    def load_resources(self,language,my_id=None, path=__module_path):
+        lexicons, default_id, this_folder, folder_per_lang = load_lexicons(language, path)
 
         id_to_load = None
         if my_id is None:
