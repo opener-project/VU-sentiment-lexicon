@@ -13,7 +13,7 @@ __module_dir = os.path.dirname(__file__)
 # 20-dic-2012: new hotel lexicons from Isa updated
 #########
 
-def load_lexicons(language, path=__module_dir):
+def load_lexicons(language, path=None):
         if path is None:
           path = __module_path
         folder_per_lang = {}
@@ -42,7 +42,7 @@ def load_lexicons(language, path=__module_dir):
         if default_id is None: default_id = first_id
         return lexicons,default_id,path,folder_per_lang
 
-def show_lexicons(language, path=__module_dir):
+def show_lexicons(language, path=None):
     if path is None:
       path = __module_path
     lexicons, default_id, this_folder, folder_per_lang = load_lexicons(language, path)
@@ -64,7 +64,7 @@ def show_lexicons(language, path=__module_dir):
 
 class LexiconSent:
 
-    def __init__(self,language='nl',lexicon_id=None, path=__module_path):
+    def __init__(self,language='nl',lexicon_id=None, path=None):
         if path is None:
           path = __module_path
 
@@ -83,7 +83,7 @@ class LexiconSent:
         self.__load_lexicon_xml()
 
 
-    def load_resources(self,language,my_id=None, path=__module_path):
+    def load_resources(self,language,my_id=None, path=None):
         if path is None:
           path = __module_path
         lexicons, default_id, this_folder, folder_per_lang = load_lexicons(language, path)
