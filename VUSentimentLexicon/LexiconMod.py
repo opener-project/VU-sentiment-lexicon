@@ -15,7 +15,7 @@ __module_dir = os.path.dirname(__file__)
 
 def load_lexicons(language, path=None):
         if path is None:
-          path = __module_path
+          path = __module_dir
         folder_per_lang = {}
         folder_per_lang['nl'] = 'NL-lexicon'
         folder_per_lang['en'] = 'EN-lexicon'
@@ -44,7 +44,7 @@ def load_lexicons(language, path=None):
 
 def show_lexicons(language, path=None):
     if path is None:
-      path = __module_path
+      path = __module_dir
     lexicons, default_id, this_folder, folder_per_lang = load_lexicons(language, path)
     print
     print '#'*30
@@ -66,7 +66,7 @@ class LexiconSent:
 
     def __init__(self,language='nl',lexicon_id=None, path=None):
         if path is None:
-          path = __module_path
+          path = __module_dir
 
         self.VERSION = '1.0'
         logging.debug('Loading lexicon for '+language)
@@ -85,7 +85,7 @@ class LexiconSent:
 
     def load_resources(self,language,my_id=None, path=None):
         if path is None:
-          path = __module_path
+          path = __module_dir
         lexicons, default_id, this_folder, folder_per_lang = load_lexicons(language, path)
 
         id_to_load = None
