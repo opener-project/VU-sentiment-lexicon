@@ -13,7 +13,9 @@ __module_dir = os.path.dirname(__file__)
 # 20-dic-2012: new hotel lexicons from Isa updated
 #########
 
-def load_lexicons(language, lexicon_path=__module_dir):
+def load_lexicons(language, path=__module_dir):
+        if path is None:
+          path = __module_path
         folder_per_lang = {}
         folder_per_lang['nl'] = 'NL-lexicon'
         folder_per_lang['en'] = 'EN-lexicon'
@@ -22,7 +24,7 @@ def load_lexicons(language, lexicon_path=__module_dir):
         folder_per_lang['it'] = 'IT-lexicon'
         folder_per_lang['es'] = 'ES-lexicon'
 
-        config_file = os.path.join(lexicon_path,folder_per_lang[language],'config.xml')
+        config_file = os.path.join(path,folder_per_lang[language],'config.xml')
         lexicons_obj = etree.parse(config_file)
         lexicons = {}
         default_id = None
@@ -38,10 +40,12 @@ def load_lexicons(language, lexicon_path=__module_dir):
             resource = lexicon.find('resource').text
             lexicons[this_id] = (filename,description,resource)
         if default_id is None: default_id = first_id
-        return lexicons,default_id,lexicon_path,folder_per_lang
+        return lexicons,default_id,path,folder_per_lang
 
 def show_lexicons(language, path=__module_dir):
-    lexicons, default_id,this_folder,folder_per_lang = load_lexicons(language, path)
+    if path is None:
+      path = __module_path
+    lexicons, default_id, this_folder, folder_per_lang = load_lexicons(language, path)
     print
     print '#'*30
     print 'Available lexicons for',language
@@ -61,6 +65,9 @@ def show_lexicons(language, path=__module_dir):
 class LexiconSent:
 
     def __init__(self,language='nl',lexicon_id=None, path=__module_path):
+        if path is None:
+          path = __module_path
+
         self.VERSION = '1.0'
         logging.debug('Loading lexicon for '+language)
         self.sentLex = {}
@@ -77,6 +84,8 @@ class LexiconSent:
 
 
     def load_resources(self,language,my_id=None, path=__module_path):
+        if path is None:
+          path = __module_path
         lexicons, default_id, this_folder, folder_per_lang = load_lexicons(language, path)
 
         id_to_load = None
