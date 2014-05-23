@@ -1,10 +1,5 @@
 <lexicons>
-  <lexicon id="hotel" default="1">
-    <filename>Sentiment-English-HotelDomain.xml</filename>
-    <description>Hotel domain lexicon for English</description>
-    <resource>VUA_olery_lexicon_EN_lmf</resource>
-  </lexicon>
-  <lexicon id="general" default="0">
+  <lexicon id="general" default="1">
     <filename>Sentiment-English-general.xml</filename>
     <description>General lexicon for English</description>
     <resource>VUA_olery_lexicon_EN_lmf</resource>
