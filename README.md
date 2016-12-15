@@ -98,6 +98,12 @@ The method is based on SentiWordNet and basically we map, SentiWorNet to the WOL
 
 5) Manually correct lexicon with the most common errors (stop words, neutral verbs, etc). Keep in mind that the polarity tagger does not use WSD, only lemmatization and Part of Speech, so we do the corrections in that direction.
 
+Reference
+----------
+Maks I, Izquierdo R, Frontini F, Agerri R, Vossen P (2014) Generating polarity
+lexicons with wordnet propagation in five languages. In: Proceedings of the Ninth
+International Conference on Language Resources and Evaluation (LREC'14)
+
 Contact
 ----------
 * Ruben Izquierdo
